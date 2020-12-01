@@ -7,6 +7,8 @@ defmodule OrderPayloadParserWeb.Router do
 
   scope "/api", OrderPayloadParserWeb do
     pipe_through :api
+
+    resources "/orders", OrderController, only: [:create]
   end
 
   # Enables LiveDashboard only for development
