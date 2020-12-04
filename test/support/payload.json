@@ -6,8 +6,8 @@
   "last_updated": "2019-06-25T13:26:49.000-04:00",
   "total_amount": 49.9,
   "total_shipping": 5.14,
-  "total_amount_with_shipping": 55.04,
-  "paid_amount": 55.04,
+  "total_amount_with_shipping": 254.64,
+  "paid_amount": 254.64,
   "expiration_date": "2019-07-22T16:45:35.000-04:00",
   "total_shipping": 5.14,
   "order_items": [
@@ -36,11 +36,11 @@
       "installments": 1,
       "payment_type": "credit_card",
       "status": "paid",
-      "transaction_amount": 49.9,
+      "transaction_amount": 249.50,
       "taxes_amount": 0,
       "shipping_cost": 5.14,
-      "total_paid_amount": 55.04,
-      "installment_amount": 55.04,
+      "total_paid_amount": 254.64,
+      "installment_amount": 254.64,
       "date_approved": "2019-06-24T16:45:35.000-04:00",
       "date_created": "2019-06-24T16:45:33.000-04:00"
     }

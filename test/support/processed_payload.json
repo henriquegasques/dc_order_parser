@@ -3,7 +3,8 @@
         "storeId": 282,
         "subTotal": "49.90",
         "deliveryFee": "5.14",
-        "total": "55.04",
+        "total_shipping": "5.14",
+        "total": "254.64",
         "country": "BR",
         "state": "São Paulo",
         "city": "Cidade de Testes",
@@ -42,7 +43,7 @@
         "payments": [
             {
                 "type": "CREDIT_CARD",
-                "value": 55.04
+                "value": 254.64
             }
         ]
     }
