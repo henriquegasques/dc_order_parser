@@ -5,7 +5,7 @@ defmodule OrderPayloadParser.OrderValidationAPIClient do
       Jason.encode!(order_payload),
       [
         {"Content-Type", "application/json"},
-        {"X-Sent", current_date_and_time},
+        {"X-Sent", current_date_and_time()},
       ])
   end
 

@@ -16,8 +16,8 @@ defmodule OrderPayloadParserWeb.OrderController do
     end
   end
 
-  defp persist_order(_order) do
-    IO.puts "persist"
+  defp persist_order(order) do
+    OrderPayloadParser.Orders.create_order(order)
   end
 
   defp perform_validation_request(order, retry \\ 3)

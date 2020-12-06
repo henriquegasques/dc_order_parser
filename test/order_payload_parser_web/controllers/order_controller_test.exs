@@ -5,8 +5,12 @@ defmodule OrderPayloadParserWeb.OrderControllerTest do
     test "persists the order and renders information about it", %{conn: conn} do
       conn = post(conn, Routes.order_path(conn, :create), payload())
 
+      [created_order | _] = OrderPayloadParser.Orders.list_orders
+
       assert %{"data" => response} = json_response(conn, 200)
       assert response["total"] == "254.64"
+
+      assert created_order.externalCode == response["externalCode"]
     end
   end
 
