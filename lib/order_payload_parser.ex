@@ -9,48 +9,50 @@ defmodule OrderPayloadParser do
 
   def parse(payload) do
     %{
-      "externalCode"   => Map.fetch!(payload, "id") |> to_str,
-      "storeId"        => Map.fetch!(payload, "store_id"),
-      "subTotal"       => Map.fetch!(payload, "total_amount") |> to_str,
-      "deliveryFee"    => Map.fetch!(payload, "total_shipping") |> to_str,
-      "total_shipping" => Map.fetch!(payload, "total_shipping") |> to_str,
-      "total"          => Map.fetch!(payload, "total_amount_with_shipping") |> to_str,
+      "externalCode"   => payload["id"] |> to_str,
+      "storeId"        => payload["store_id"],
+      "subTotal"       => payload["total_amount"] |> to_str,
+      "deliveryFee"    => payload["total_shipping"] |> to_str,
+      "total_shipping" => payload["total_shipping"] |> to_str,
+      "total"          => payload["total_amount_with_shipping"] |> to_str,
       "country"        => fetch_country_id(payload),
       "state"          => fetch_state_name(payload),
       "city"           => fetch_city_name(payload),
       "district"       => fetch_district_name(payload),
-      "street"         => Map.fetch!(receiver_address(payload), "street_name"),
-      "complement"     => Map.fetch!(receiver_address(payload), "comment"),
-      "latitude"       => Map.fetch!(receiver_address(payload), "latitude"),
-      "longitude"      => Map.fetch!(receiver_address(payload), "longitude"),
-      "dtOrderCreate"  => Map.fetch!(payload, "date_created"),
-      "postalCode"     => Map.fetch!(receiver_address(payload), "zip_code"),
-      "number"         => Map.fetch!(receiver_address(payload), "street_number"),
+      "street"         => receiver_address(payload)["street_name"],
+      "complement"     => receiver_address(payload)["comment"],
+      "latitude"       => receiver_address(payload)["latitude"],
+      "longitude"      => receiver_address(payload)["longitude"],
+      "dtOrderCreate"  => payload["date_created"],
+      "postalCode"     => receiver_address(payload)["zip_code"],
+      "number"         => receiver_address(payload)["street_number"],
       "customer" => %{
         "externalCode" => get_in(payload, ["buyer", "id"]) |> to_str,
         "name"         => get_in(payload, ["buyer", "nickname"]),
         "email"        => get_in(payload, ["buyer", "email"]),
         "contact"      => customer_phone_number(payload),
       },
-      "items"    => fetch_order_items(payload),
-      "payments" => fetch_payment_info(payload)
+      "items"    => fetch_order_items(payload["order_items"]),
+      "payments" => fetch_payment_info(payload["payments"])
     }
   end
 
-  defp fetch_payment_info(payload) do
-    Map.fetch!(payload, "payments")
+  defp fetch_payment_info(nil), do: []
+  defp fetch_payment_info(payments) do
+    payments
     |> Enum.map(&build_payment_info/1)
   end
 
   defp build_payment_info(payment) do
     %{
-      "type"  => Map.fetch!(payment, "payment_type") |> String.upcase,
-      "value" => Map.fetch!(payment, "total_paid_amount")
+      "type"  => payment["payment_type"] |> String.upcase,
+      "value" => payment["total_paid_amount"]
     }
   end
 
-  defp fetch_order_items(payload) do
-    Map.fetch!(payload, "order_items")
+  defp fetch_order_items(nil), do: []
+  defp fetch_order_items(order_items) do
+    order_items
     |> Enum.map(&build_order_item/1)
   end
 
