@@ -4,13 +4,28 @@ defmodule OrderPayloadParserWeb.OrderController do
   def create(conn, params) do
     parsed_order = OrderPayloadParser.parse(params)
 
-    case OrderPayloadParser.OrderValidationAPIClient.validate_order(parsed_order) do
+    case perform_validation_request(parsed_order) do
       {:ok, %HTTPoison.Response{status_code: 200}} ->
-        persist_order && render_order(conn, parsed_order)
+        persist_order(parsed_order) && render_order(conn, parsed_order)
       {:ok, %HTTPoison.Response{status_code: 400} = response} ->
         render_error(conn, response)
-      {:error, %HTTPoison.Error{reason: :timeout}} ->
-        retry
+      {:error, _response} ->
+        conn
+        |> put_status(503)
+        |> json(%{error: :timeout})
+    end
+  end
+
+  defp persist_order(order) do
+    IO.puts "persist"
+  end
+
+  defp perform_validation_request(order, retry \\ 3)
+  defp perform_validation_request(_order, _retry = 0), do: {:error, "timeout"}
+  defp perform_validation_request(order, retry) do
+    case OrderPayloadParser.OrderValidationAPIClient.validate_order(order) do
+      {:error, %HTTPoison.Error{reason: :timeout}} -> perform_validation_request(order, retry - 1)
+      {:ok, response} -> {:ok, response}
     end
   end
 
@@ -22,13 +37,5 @@ defmodule OrderPayloadParserWeb.OrderController do
     conn
     |> put_status(:bad_request)
     |> render("error.json", message: response.body)
-  end
-
-  defp persist_order do
-    IO.puts "persist"
-  end
-
-  def retry do
-    IO.puts "retry"
   end
 end
