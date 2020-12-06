@@ -8,4 +8,8 @@ defmodule OrderPayloadParserWeb.OrderView do
   def render("order.json", %{order: order_payload}) do
     order_payload
   end
+
+  def render("error.json", %{message: message}) do
+    %{error: message}
+  end
 end

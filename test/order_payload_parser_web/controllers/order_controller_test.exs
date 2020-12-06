@@ -5,15 +5,19 @@ defmodule OrderPayloadParserWeb.OrderControllerTest do
     test "persists the order and renders information about it", %{conn: conn} do
       conn = post(conn, Routes.order_path(conn, :create), payload())
 
-      assert %{"data" => _response} = json_response(conn, 200)
+      assert %{"data" => response} = json_response(conn, 200)
+      assert response["total"] == "254.64"
     end
   end
 
   describe "when the parsed order is invalidated by the validation API" do
-    test "returns the errer and does not persist the order", %{conn: conn} do
-      conn = post(conn, Routes.order_path(conn, :create), %{invalid: "payload"})
+    test "returns the error and does not persist the order", %{conn: conn} do
+      conn = post(conn, Routes.order_path(conn, :create), %{})
 
-      assert %{"data" => _response} = json_response(conn, 400)
+      assert %{"error" => response} = json_response(conn, 400)
+      assert response =~ "externalCode, storeId, subTotal, deliveryFee, total, country"
+      assert response =~ "state, city, district, street, complement, latitude, longitude"
+      assert response =~ "dtOrderCreate, postalCode, number, items, payments, total_shipping] are required"
     end
   end
 
