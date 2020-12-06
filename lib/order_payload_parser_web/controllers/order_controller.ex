@@ -2,7 +2,7 @@ defmodule OrderPayloadParserWeb.OrderController do
   use OrderPayloadParserWeb, :controller
 
   def create(conn, params) do
-    parsed_order = OrderPayloadParser.parse(params)
+    parsed_order = OrderPayloadParser.Parser.parse(params)
 
     case perform_validation_request(parsed_order) do
       {:ok, %HTTPoison.Response{status_code: 200}} ->
@@ -16,7 +16,7 @@ defmodule OrderPayloadParserWeb.OrderController do
     end
   end
 
-  defp persist_order(order) do
+  defp persist_order(_order) do
     IO.puts "persist"
   end
 

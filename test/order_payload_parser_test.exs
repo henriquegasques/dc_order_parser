@@ -1,9 +1,9 @@
-defmodule OrderPayloadParser.OrderPayloadParserTest do
+defmodule OrderPayloadParser.Parser.OrderPayloadParser.ParserTest do
   use ExUnit.Case, async: true
 
   describe "parse" do
     test "parses the payload" do
-      result = OrderPayloadParser.parse(payload())
+      result = OrderPayloadParser.Parser.parse(payload())
 
       assert result == expected_result()
     end
