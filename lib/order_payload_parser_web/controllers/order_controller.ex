@@ -6,9 +6,7 @@ defmodule OrderPayloadParserWeb.OrderController do
 
     case perform_validation_request(parsed_order) do
       {:ok, %HTTPoison.Response{status_code: 200}} ->
-        persist_order(parsed_order)
-        |> IO.inspect
-
+        OrderPayloadParser.Orders.create_order(parsed_order)
         render(conn, "show.json", order: parsed_order)
 
       {:ok, %HTTPoison.Response{status_code: 400} = response} ->
@@ -19,10 +17,6 @@ defmodule OrderPayloadParserWeb.OrderController do
         |> put_status(503)
         |> json(%{error: :timeout})
     end
-  end
-
-  defp persist_order(order) do
-    OrderPayloadParser.Orders.create_order(order)
   end
 
   defp perform_validation_request(order, retry \\ 3)
